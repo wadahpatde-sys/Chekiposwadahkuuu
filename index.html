@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en"><head>
+      <link rel="icon" href="https://i.ibb.co/7dmcJzT0/images-1.jpg">
+<link rel="shortcut icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhoY7iwFAtaa4wpml7gMjhU8EFnEWSIQtE8HjIY8koC16FgR-dw7w1aOdQZpjOUkWlqCWbTvPmqHkFhKGETe_jykJylBh_INlir3GMrGxUuZgrhVMYU9vw-xlNSQGwTImyTRVDzJ1DcjfPt5405IkQNUWvu9Az_A0jbqhQFil3iPiPL1H4cE1fN0S9qHFQ/s320/A%20New%20Design%20-%20Dibuat%20dengan%20PosterMyWall%20(8).jpg" type="image/x-icon">
+  
+  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>+ Bulk Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+			
+			background-image: url("https://i.ibb.co/pvD5z4dp/The-Beatles-Abbey-Road-album-cover.png");
+			background-size: cover;        /
+			background-position: center;   
+			background-repeat: no-repeat;  
+			background-attachment: fixed;  
+        }
+		textarea {
+	width: 100%;
+	height: 150px;
+	margin-bottom: 10px;
+
+		
+	background: 
+    linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)),
+    url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEizx7b230N7SjQzn9CoZwrrx0s4qqZ92qA-x_DjfC1D4Mzv_tFk1ilBqyR-wshW9Sg0eHgkufPzLRn4YblA-UjtzjvEeRUC8BL7AlYH41st66FzKKKG-zOIhB0SqOVtBaT5mx0b5tkkaoONBSGrP8YNW3S3uv0j7LSzvPLykwP9rAFtPdzZ8SXNbn6z8_E/w420-h420/photo_2025-09-26_08-45-59.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    padding: 10px;
+    border: 1px solid #999;
+    color: #000;
+        }
+        button {
+            background-color: #2bff00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+<meta name="google-adsense-platform-account" content="ca-host-pub-1556223355139109">
+<meta name="google-adsense-platform-domain" content="blogspot.com">
+</head>
+<body>
+
+<div class="container">
+    <h2>PINTARBOLA CEK LINK </h2>
+    <textarea id="inputField" placeholder="Masukkan domain"></textarea>
+    <input type="button" value="Check Domains" onclick="convertDomains()">
+    <input type="button" value="Export URL (Encoded)" onclick="exportData()">
+</div>
+
+<script>
+  // Utility untuk Base64 encoding/decoding
+  function encodeBase64(obj) {
+      return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+  }
+
+  function decodeBase64(str) {
+      return JSON.parse(decodeURIComponent(escape(atob(str))));
+  }
+
+  // Saat halaman dimuat
+  window.onload = function() {
+      const hash = window.location.hash;
+      if (hash.startsWith("#import=")) {
+          try {
+              const base64Data = hash.replace("#import=", "");
+              const data = decodeBase64(base64Data);
+              if (data && data.domains) {
+                  localStorage.setItem("domainsInput", data.domains);
+              }
+
+              const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+              const redirectUrl = isMobile ? "https://kom-kom-kom.blogspot.com/?m=1" : "https://kom-kom-kom.blogspot.com/";
+              window.location.href = redirectUrl;
+              return;
+          } catch (e) {
+              alert("Import gagal: data tidak valid.");
+              console.error(e);
+          }
+      }
+
+      // Isi dari localStorage kalau ada
+      const stored = localStorage.getItem("domainsInput");
+      if (stored) {
+          document.getElementById("inputField").value = stored;
+      }
+  };
+
+  function convertDomains() {
+      const input = document.getElementById("inputField").value.trim();
+      if (!input) {
+          alert("Isi dulu domainnya.");
+          return;
+      }
+
+      localStorage.setItem("domainsInput", input);
+
+      const domains = input.split('\n')
+                           .map(domain => domain.trim())
+                           .join('%0D%0A');
+
+      const url = 'https://trustpositif.komdigi.go.id/welcome?domains=' + domains;
+      window.open(url, '_blank');
+  }
+
+  function exportData() {
+      const input = document.getElementById("inputField").value.trim();
+      const exportButton = document.querySelector('input[value="Export URL (Encoded)"]');
+      
+      if (!input) {
+          alert("Isi dulu dong.");
+          return;
+      }
+  
+      const data = {
+          domains: input
+      };
+  
+      const encoded = encodeBase64(data);
+      const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+      const baseUrl = isMobile ? "https://kom-kom-kom.blogspot.com/?m=1" : "https://kom-kom-kom.blogspot.com/";
+      const fullUrl = baseUrl + "#import=" + encoded;
+  
+      // Buat copy otomatis ke clipboard
+      navigator.clipboard.writeText(fullUrl).then(() => {
+          // Ubah tampilan tombol
+          exportButton.value = "✅ Berhasil Diexport!";
+          exportButton.style.color = "green";
+  
+          // Balikin lagi setelah 2 detik
+          setTimeout(() => {
+              exportButton.value = "Export URL (Encoded)";
+              exportButton.style.color = "";
+          }, 2000);
+      }).catch(err => {
+          alert("Gagal menyalin URL ke clipboard.");
+          console.error(err);
+      });
+  }
+</script>
+
+
+</body></html>
